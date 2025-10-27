@@ -11,7 +11,11 @@ dependencies:
   cached_network_image_platform_interface: ^4.1.1
   flutter:
     sdk: flutter
-  flutter_cache_manager: ^3.4.1
+  flutter_cache_manager: #^3.4.1
+    git:
+      url: https://github.com/Railway-Engineering-Solutions/flutter_cache_manager.git
+      ref: develop
+      path: flutter_cache_manager
   web: ^1.0.0
 
 dev_dependencies:
