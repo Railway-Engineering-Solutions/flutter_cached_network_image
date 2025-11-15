@@ -32,13 +32,6 @@ packages:
       relative: true
     source: path
     version: "3.4.1"
-  cached_network_image_platform_interface:
-    dependency: "direct overridden"
-    description:
-      path: "../../cached_network_image_platform_interface"
-      relative: true
-    source: path
-    version: "4.1.1"
   characters:
     dependency: transitive
     description:

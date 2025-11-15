@@ -22,7 +22,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     InformationCollector? informationCollector,
   })  : _informationCollector = informationCollector,
         _scale = scale {
-    codec.listen(
+    _codecSubscription = codec.listen(
       (event) {
         if (_timer != null) {
           _nextImageCodec = event;
@@ -72,6 +72,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   int _framesEmitted = 0;
   Timer? _timer;
   StreamSubscription<ImageChunkEvent>? _chunkSubscription;
+  StreamSubscription<ui.Codec>? _codecSubscription;
 
   // Used to guard against registering multiple _handleAppFrame callbacks for the same frame.
   bool _frameCallbackScheduled = false;
@@ -205,9 +206,17 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
 
     __disposed = true;
 
+    _codecSubscription?.cancel();
+    _codecSubscription = null;
+
     _chunkSubscription?.onData(null);
     _chunkSubscription?.cancel();
     _chunkSubscription = null;
+
+    _codec?.dispose();
+    _codec = null;
+    _nextImageCodec?.dispose();
+    _nextImageCodec = null;
   }
 }
 
