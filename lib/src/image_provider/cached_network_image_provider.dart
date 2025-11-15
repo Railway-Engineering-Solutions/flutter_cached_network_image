@@ -1,15 +1,17 @@
 import 'dart:async' show Future, StreamController;
 import 'dart:ui' as ui show Codec;
 
+import 'package:cached_network_image/src/image_provider/_image_loader.dart'
+    show ImageLoader;
 import 'package:cached_network_image/src/image_provider/multi_image_stream_completer.dart';
-import 'package:cached_network_image/src/image_provider/_image_loader.dart' show ImageLoader;
-import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart'
-    show ErrorListener;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-/// IO implementation of the CachedNetworkImageProvider; the ImageProvider to
+/// Listener for errors
+typedef ErrorListener = void Function(Object);
+
+/// Implementation of the CachedNetworkImageProvider; the ImageProvider to
 /// load network images using a cache.
 @immutable
 class CachedNetworkImageProvider

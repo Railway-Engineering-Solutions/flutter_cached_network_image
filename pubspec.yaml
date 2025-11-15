@@ -13,11 +13,6 @@ environment:
   flutter: ">=3.10.0"
 
 dependencies:
-  cached_network_image_platform_interface:
-    git:
-      url: https://github.com/Railway-Engineering-Solutions/flutter_cached_network_image.git
-      ref: develop
-      path: cached_network_image_platform_interface
   flutter:
     sdk: flutter
   flutter_cache_manager: #^3.4.1
