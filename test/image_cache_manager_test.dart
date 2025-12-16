@@ -49,6 +49,7 @@ void main() {
           withProgress: any(named: 'withProgress'),
           maxHeight: any(named: 'maxHeight'),
           maxWidth: any(named: 'maxWidth'),
+          cancellationToken: any(named: 'cancellationToken'),
         ),
       ).called(1);
 
@@ -58,6 +59,7 @@ void main() {
           key: any(named: 'key'),
           headers: any(named: 'headers'),
           withProgress: any(named: 'withProgress'),
+          cancellationToken: any(named: 'cancellationToken'),
         ),
       );
     },
@@ -92,6 +94,7 @@ void main() {
           key: any(named: 'key'),
           headers: any(named: 'headers'),
           withProgress: any(named: 'withProgress'),
+          cancellationToken: any(named: 'cancellationToken'),
         ),
       ).called(1);
     },

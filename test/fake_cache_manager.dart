@@ -17,6 +17,7 @@ class FakeCacheManager extends Mock implements CacheManager {
         key: any(named: 'key'),
         headers: any(named: 'headers'),
         withProgress: any(named: 'withProgress'),
+        cancellationToken: any(named: 'cancellationToken'),
       ),
     ).thenThrow(
       HttpExceptionWithStatus(
@@ -44,6 +45,7 @@ class FakeCacheManager extends Mock implements CacheManager {
         key: any(named: 'key'),
         headers: any(named: 'headers'),
         withProgress: any(named: 'withProgress'),
+        cancellationToken: any(named: 'cancellationToken'),
       ),
     ).thenAnswer(
       (_) => _createResultStream(
@@ -107,6 +109,7 @@ class FakeImageCacheManager extends Mock implements ImageCacheManager {
         withProgress: any(named: 'withProgress'),
         maxHeight: any(named: 'maxHeight'),
         maxWidth: any(named: 'maxWidth'),
+        cancellationToken: any(named: 'cancellationToken'),
       ),
     ).thenAnswer(
       (_) => _createResultStream(

@@ -27,7 +27,6 @@ class CachedNetworkImageProvider
     this.headers,
     this.cacheManager,
     this.cacheKey,
-    this.cancellationToken,
   });
 
   /// CacheManager from which the image files are loaded.
@@ -59,9 +58,6 @@ class CachedNetworkImageProvider
   /// [ImageCacheManager] the image is resized on disk to fit the width.
   final int? maxWidth;
 
-  /// Cancellation token to cancel the network request.
-  final CancellationToken? cancellationToken;
-
   @override
   Future<CachedNetworkImageProvider> obtainKey(
     ImageConfiguration configuration,
@@ -76,14 +72,16 @@ class CachedNetworkImageProvider
     DecoderBufferCallback decode,
   ) {
     final chunkEvents = StreamController<ImageChunkEvent>();
+    final cancellationToken = CancellationToken();
     final imageStreamCompleter = MultiImageStreamCompleter(
-      codec: _loadBufferAsync(key, chunkEvents, decode),
+      codec: _loadBufferAsync(key, chunkEvents, decode, cancellationToken),
       chunkEvents: chunkEvents.stream,
       scale: key.scale,
       informationCollector: () => <DiagnosticsNode>[
         DiagnosticsProperty<ImageProvider>('Image provider', this),
         DiagnosticsProperty<CachedNetworkImageProvider>('Image key', key),
       ],
+      cancellationToken: cancellationToken,
     );
 
     if (errorListener != null) {
@@ -105,6 +103,7 @@ class CachedNetworkImageProvider
     CachedNetworkImageProvider key,
     StreamController<ImageChunkEvent> chunkEvents,
     DecoderBufferCallback decode,
+    CancellationToken cancellationToken,
   ) {
     assert(key == this);
     return ImageLoader().loadBufferAsync(
@@ -127,14 +126,16 @@ class CachedNetworkImageProvider
     ImageDecoderCallback decode,
   ) {
     final chunkEvents = StreamController<ImageChunkEvent>();
+    final cancellationToken = CancellationToken();
     final imageStreamCompleter = MultiImageStreamCompleter(
-      codec: _loadImageAsync(key, chunkEvents, decode),
+      codec: _loadImageAsync(key, chunkEvents, decode, cancellationToken),
       chunkEvents: chunkEvents.stream,
       scale: key.scale,
       informationCollector: () => <DiagnosticsNode>[
         DiagnosticsProperty<ImageProvider>('Image provider', this),
         DiagnosticsProperty<CachedNetworkImageProvider>('Image key', key),
       ],
+      cancellationToken: cancellationToken,
     );
 
     if (errorListener != null) {
@@ -155,6 +156,7 @@ class CachedNetworkImageProvider
     CachedNetworkImageProvider key,
     StreamController<ImageChunkEvent> chunkEvents,
     ImageDecoderCallback decode,
+    CancellationToken cancellationToken,
   ) {
     assert(key == this);
     return ImageLoader().loadImageAsync(

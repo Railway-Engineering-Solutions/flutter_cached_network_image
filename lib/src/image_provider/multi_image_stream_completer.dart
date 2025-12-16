@@ -4,6 +4,7 @@ import 'dart:ui' as ui show Codec, FrameInfo;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 /// Slows down animations by this factor to help in development.
 double get timeDilation => _timeDilation;
@@ -14,14 +15,17 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   /// The constructor to create an MultiImageStreamCompleter. The [codec]
   /// should be a stream with the images that should be shown. The
   /// [chunkEvents] should indicate the [ImageChunkEvent]s of the first image
-  /// to show.
+  /// to show. The [cancellationToken] is used to cancel pending network
+  /// requests when all listeners are removed.
   MultiImageStreamCompleter({
     required Stream<ui.Codec> codec,
     required double scale,
     Stream<ImageChunkEvent>? chunkEvents,
     InformationCollector? informationCollector,
+    CancellationToken? cancellationToken,
   })  : _informationCollector = informationCollector,
-        _scale = scale {
+        _scale = scale,
+        _cancellationToken = cancellationToken {
     _codecSubscription = codec.listen(
       (event) {
         if (_timer != null) {
@@ -60,6 +64,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   ui.Codec? _nextImageCodec;
   final double _scale;
   final InformationCollector? _informationCollector;
+  final CancellationToken? _cancellationToken;
   ui.FrameInfo? _nextFrame;
 
   // When the current was first shown.
@@ -130,8 +135,12 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   }
 
   Future<void> _decodeNextFrameAndSchedule() async {
+    // Check if disposed before starting
+    final codec = _codec;
+    if (codec == null) return;
+
     try {
-      _nextFrame = await _codec!.getNextFrame();
+      _nextFrame = await codec.getNextFrame();
     } on Object catch (exception, stack) {
       reportError(
         context: ErrorDescription('resolving an image frame'),
@@ -142,7 +151,10 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
       );
       return;
     }
-    if (_codec!.frameCount == 1) {
+    // Check if disposed while waiting for frame
+    if (_codec == null) return;
+
+    if (codec.frameCount == 1) {
       // ImageStreamCompleter listeners removed while waiting for next frame to
       // be decoded.
       // There's no reason to emit the frame without active listeners.
@@ -205,6 +217,9 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     }
 
     __disposed = true;
+
+    // Cancel any pending network requests
+    _cancellationToken?.cancel();
 
     _codecSubscription?.cancel();
     _codecSubscription = null;

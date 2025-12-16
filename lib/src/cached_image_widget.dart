@@ -36,7 +36,7 @@ typedef LoadingErrorWidgetBuilder = Widget Function(
 );
 
 /// Image widget to show NetworkImage with caching functionality.
-class CachedNetworkImage extends StatefulWidget {
+class CachedNetworkImage extends StatelessWidget {
   /// Get the current log level of the cache manager.
   static CacheManagerLogLevel get logLevel => CacheManager.logLevel;
 
@@ -242,43 +242,23 @@ class CachedNetworkImage extends StatefulWidget {
   /// Scale of the image
   final double scale;
 
-  @override
-  State<CachedNetworkImage> createState() => _CachedNetworkImageState();
-}
-
-class _CachedNetworkImageState extends State<CachedNetworkImage> {
-  late final CancellationToken _cancellationToken;
-
-  @override
-  void initState() {
-    super.initState();
-    _cancellationToken = CancellationToken();
-  }
-
-  @override
-  void dispose() {
-    _cancellationToken.cancel();
-    super.dispose();
-  }
+  CachedNetworkImageProvider get _image => CachedNetworkImageProvider(
+        imageUrl,
+        headers: httpHeaders,
+        cacheManager: cacheManager,
+        cacheKey: cacheKey,
+        maxWidth: maxWidthDiskCache,
+        maxHeight: maxHeightDiskCache,
+        errorListener: errorListener,
+        scale: scale,
+      );
 
   @override
   Widget build(BuildContext context) {
-    final image = CachedNetworkImageProvider(
-      widget.imageUrl,
-      headers: widget.httpHeaders,
-      cacheManager: widget.cacheManager,
-      cacheKey: widget.cacheKey,
-      maxWidth: widget.maxWidthDiskCache,
-      maxHeight: widget.maxHeightDiskCache,
-      errorListener: widget.errorListener,
-      scale: widget.scale,
-      cancellationToken: _cancellationToken,
-    );
     var octoPlaceholderBuilder =
-        widget.placeholder != null ? _octoPlaceholderBuilder : null;
-    final octoProgressIndicatorBuilder = widget.progressIndicatorBuilder != null
-        ? _octoProgressIndicatorBuilder
-        : null;
+        placeholder != null ? _octoPlaceholderBuilder : null;
+    final octoProgressIndicatorBuilder =
+        progressIndicatorBuilder != null ? _octoProgressIndicatorBuilder : null;
 
     ///If there is no placeholder OctoImage does not fade, so always set an
     ///(empty) placeholder as this always used to be the behaviour of
@@ -289,48 +269,37 @@ class _CachedNetworkImageState extends State<CachedNetworkImage> {
     }
 
     return OctoImage(
-      image: image,
-      imageBuilder: widget.imageBuilder != null ? _octoImageBuilder : null,
+      image: _image,
+      imageBuilder: imageBuilder != null ? _octoImageBuilder : null,
       placeholderBuilder: octoPlaceholderBuilder,
       progressIndicatorBuilder: octoProgressIndicatorBuilder,
-      errorBuilder: widget.errorWidget != null ? _octoErrorBuilder : null,
-      fadeOutDuration: widget.fadeOutDuration,
-      fadeOutCurve: widget.fadeOutCurve,
-      fadeInDuration: widget.fadeInDuration,
-      fadeInCurve: widget.fadeInCurve,
-      width: widget.width,
-      height: widget.height,
-      fit: widget.fit,
-      alignment: widget.alignment,
-      repeat: widget.repeat,
-      matchTextDirection: widget.matchTextDirection,
-      color: widget.color,
-      filterQuality: widget.filterQuality,
-      colorBlendMode: widget.colorBlendMode,
-      placeholderFadeInDuration: widget.placeholderFadeInDuration,
-      gaplessPlayback: widget.useOldImageOnUrlChange,
-      memCacheWidth: widget.memCacheWidth,
-      memCacheHeight: widget.memCacheHeight,
+      errorBuilder: errorWidget != null ? _octoErrorBuilder : null,
+      fadeOutDuration: fadeOutDuration,
+      fadeOutCurve: fadeOutCurve,
+      fadeInDuration: fadeInDuration,
+      fadeInCurve: fadeInCurve,
+      width: width,
+      height: height,
+      fit: fit,
+      alignment: alignment,
+      repeat: repeat,
+      matchTextDirection: matchTextDirection,
+      color: color,
+      filterQuality: filterQuality,
+      colorBlendMode: colorBlendMode,
+      placeholderFadeInDuration: placeholderFadeInDuration,
+      gaplessPlayback: useOldImageOnUrlChange,
+      memCacheWidth: memCacheWidth,
+      memCacheHeight: memCacheHeight,
     );
   }
 
   Widget _octoImageBuilder(BuildContext context, Widget child) {
-    final image = CachedNetworkImageProvider(
-      widget.imageUrl,
-      headers: widget.httpHeaders,
-      cacheManager: widget.cacheManager,
-      cacheKey: widget.cacheKey,
-      maxWidth: widget.maxWidthDiskCache,
-      maxHeight: widget.maxHeightDiskCache,
-      errorListener: widget.errorListener,
-      scale: widget.scale,
-      cancellationToken: _cancellationToken,
-    );
-    return widget.imageBuilder!(context, image);
+    return imageBuilder!(context, _image);
   }
 
   Widget _octoPlaceholderBuilder(BuildContext context) {
-    return widget.placeholder!(context, widget.imageUrl);
+    return placeholder!(context, imageUrl);
   }
 
   Widget _octoProgressIndicatorBuilder(
@@ -343,10 +312,10 @@ class _CachedNetworkImageState extends State<CachedNetworkImage> {
       totalSize = progress.expectedTotalBytes;
       downloaded = progress.cumulativeBytesLoaded;
     }
-    return widget.progressIndicatorBuilder!(
+    return progressIndicatorBuilder!(
       context,
-      widget.imageUrl,
-      DownloadProgress(widget.imageUrl, totalSize, downloaded),
+      imageUrl,
+      DownloadProgress(imageUrl, totalSize, downloaded),
     );
   }
 
@@ -355,6 +324,6 @@ class _CachedNetworkImageState extends State<CachedNetworkImage> {
     Object error,
     StackTrace? stackTrace,
   ) {
-    return widget.errorWidget!(context, widget.imageUrl, error);
+    return errorWidget!(context, imageUrl, error);
   }
 }
