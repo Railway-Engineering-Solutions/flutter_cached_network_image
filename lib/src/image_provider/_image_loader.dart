@@ -19,6 +19,7 @@ class ImageLoader {
     int? maxWidth,
     Map<String, String>? headers,
     VoidCallback evictImage,
+    CancellationToken? cancellationToken,
   ) {
     return _load(
       url,
@@ -33,6 +34,7 @@ class ImageLoader {
       maxWidth,
       headers,
       evictImage,
+      cancellationToken,
     );
   }
 
@@ -46,6 +48,7 @@ class ImageLoader {
     int? maxWidth,
     Map<String, String>? headers,
     VoidCallback evictImage,
+    CancellationToken? cancellationToken,
   ) {
     return _load(
       url,
@@ -60,6 +63,7 @@ class ImageLoader {
       maxWidth,
       headers,
       evictImage,
+      cancellationToken,
     );
   }
 
@@ -73,6 +77,7 @@ class ImageLoader {
     int? maxWidth,
     Map<String, String>? headers,
     VoidCallback evictImage,
+    CancellationToken? cancellationToken,
   ) async* {
     try {
       assert(
@@ -90,12 +95,14 @@ class ImageLoader {
               withProgress: true,
               headers: headers,
               key: cacheKey,
+              cancellationToken: cancellationToken,
             )
           : cacheManager.getFileStream(
               url,
               withProgress: true,
               headers: headers,
               key: cacheKey,
+              cancellationToken: cancellationToken,
             );
 
       await for (final result in stream) {

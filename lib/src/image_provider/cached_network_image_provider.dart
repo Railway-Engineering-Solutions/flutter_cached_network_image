@@ -27,6 +27,7 @@ class CachedNetworkImageProvider
     this.headers,
     this.cacheManager,
     this.cacheKey,
+    this.cancellationToken,
   });
 
   /// CacheManager from which the image files are loaded.
@@ -57,6 +58,9 @@ class CachedNetworkImageProvider
   /// Maximum width of the loaded image. If not null and using an
   /// [ImageCacheManager] the image is resized on disk to fit the width.
   final int? maxWidth;
+
+  /// Cancellation token to cancel the network request.
+  final CancellationToken? cancellationToken;
 
   @override
   Future<CachedNetworkImageProvider> obtainKey(
@@ -113,6 +117,7 @@ class CachedNetworkImageProvider
       maxWidth,
       headers,
       () => PaintingBinding.instance.imageCache.evict(key),
+      cancellationToken,
     );
   }
 
@@ -162,6 +167,7 @@ class CachedNetworkImageProvider
       maxWidth,
       headers,
       () => PaintingBinding.instance.imageCache.evict(key),
+      cancellationToken,
     );
   }
 

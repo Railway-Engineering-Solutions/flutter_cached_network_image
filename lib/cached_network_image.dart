@@ -3,7 +3,11 @@
 library cached_network_image;
 
 export 'package:flutter_cache_manager/flutter_cache_manager.dart'
-    show CacheManagerLogLevel, DownloadProgress;
+    show
+        CacheManagerLogLevel,
+        CancellationToken,
+        CancelledException,
+        DownloadProgress;
 
 export 'src/cached_image_widget.dart';
 export 'src/image_provider/cached_network_image_provider.dart';

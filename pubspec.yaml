@@ -18,7 +18,7 @@ dependencies:
   flutter_cache_manager:
     git:
       url: https://github.com/Railway-Engineering-Solutions/flutter_cache_manager.git
-      ref: develop
+      ref: feat/network-request-cancellation
       path: flutter_cache_manager
   octo_image: ^2.1.0
 
