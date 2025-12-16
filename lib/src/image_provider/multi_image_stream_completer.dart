@@ -196,6 +196,10 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     if (!hasListeners) {
       _timer?.cancel();
       _timer = null;
+      // Cancel any pending network requests immediately when no widgets are
+      // listening, regardless of whether ImageCache is keeping us alive.
+      // This ensures requests are cancelled when images scroll out of view.
+      _cancellationToken?.cancel();
       __maybeDispose();
     }
   }
