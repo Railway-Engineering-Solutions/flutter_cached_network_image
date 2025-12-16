@@ -10,22 +10,28 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 double get timeDilation => _timeDilation;
 double _timeDilation = 1;
 
+/// Callback for error handling that doesn't count as a listener.
+typedef ErrorCallback = void Function(Object error, StackTrace? stackTrace);
+
 /// An ImageStreamCompleter with support for loading multiple images.
 class MultiImageStreamCompleter extends ImageStreamCompleter {
   /// The constructor to create an MultiImageStreamCompleter. The [codec]
   /// should be a stream with the images that should be shown. The
   /// [chunkEvents] should indicate the [ImageChunkEvent]s of the first image
   /// to show. The [cancellationToken] is used to cancel pending network
-  /// requests when all listeners are removed.
+  /// requests when all listeners are removed. The [errorCallback] is called
+  /// when an error occurs but doesn't prevent cancellation like a listener would.
   MultiImageStreamCompleter({
     required Stream<ui.Codec> codec,
     required double scale,
     Stream<ImageChunkEvent>? chunkEvents,
     InformationCollector? informationCollector,
     CancellationToken? cancellationToken,
+    ErrorCallback? errorCallback,
   })  : _informationCollector = informationCollector,
         _scale = scale,
-        _cancellationToken = cancellationToken {
+        _cancellationToken = cancellationToken,
+        _errorCallback = errorCallback {
     _codecSubscription = codec.listen(
       (event) {
         if (_timer != null) {
@@ -42,6 +48,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
           informationCollector: informationCollector,
           silent: true,
         );
+        _errorCallback?.call(error, stack);
       },
     );
     if (chunkEvents != null) {
@@ -55,6 +62,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
             informationCollector: informationCollector,
             silent: true,
           );
+          _errorCallback?.call(error, stack);
         },
       );
     }
@@ -65,6 +73,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   final double _scale;
   final InformationCollector? _informationCollector;
   final CancellationToken? _cancellationToken;
+  final ErrorCallback? _errorCallback;
   ui.FrameInfo? _nextFrame;
 
   // When the current was first shown.
@@ -194,14 +203,21 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   void removeListener(ImageStreamListener listener) {
     super.removeListener(listener);
     if (!hasListeners) {
-      _timer?.cancel();
-      _timer = null;
-      // Cancel any pending network requests immediately when no widgets are
-      // listening, regardless of whether ImageCache is keeping us alive.
-      // This ensures requests are cancelled when images scroll out of view.
-      _cancellationToken?.cancel();
-      __maybeDispose();
+      _cancelLoading();
     }
+  }
+
+  void _cancelLoading() {
+    _timer?.cancel();
+    _timer = null;
+    // Cancel any pending network requests
+    _cancellationToken?.cancel();
+    // Cancel stream subscriptions to stop processing the response
+    _codecSubscription?.cancel();
+    _codecSubscription = null;
+    _chunkSubscription?.cancel();
+    _chunkSubscription = null;
+    __maybeDispose();
   }
 
   int __keepAliveHandles = 0;

@@ -82,18 +82,12 @@ class CachedNetworkImageProvider
         DiagnosticsProperty<CachedNetworkImageProvider>('Image key', key),
       ],
       cancellationToken: cancellationToken,
+      // Use errorCallback instead of adding a listener, so it doesn't
+      // prevent cancellation when the widget is disposed.
+      errorCallback: errorListener != null
+          ? (error, stackTrace) => errorListener!(error)
+          : null,
     );
-
-    if (errorListener != null) {
-      imageStreamCompleter.addListener(
-        ImageStreamListener(
-          (image, synchronousCall) {},
-          onError: (Object error, StackTrace? trace) {
-            errorListener?.call(error);
-          },
-        ),
-      );
-    }
 
     return imageStreamCompleter;
   }
@@ -136,18 +130,12 @@ class CachedNetworkImageProvider
         DiagnosticsProperty<CachedNetworkImageProvider>('Image key', key),
       ],
       cancellationToken: cancellationToken,
+      // Use errorCallback instead of adding a listener, so it doesn't
+      // prevent cancellation when the widget is disposed.
+      errorCallback: errorListener != null
+          ? (error, stackTrace) => errorListener!(error)
+          : null,
     );
-
-    if (errorListener != null) {
-      imageStreamCompleter.addListener(
-        ImageStreamListener(
-          (image, synchronousCall) {},
-          onError: (Object error, StackTrace? trace) {
-            errorListener?.call(error);
-          },
-        ),
-      );
-    }
 
     return imageStreamCompleter;
   }
