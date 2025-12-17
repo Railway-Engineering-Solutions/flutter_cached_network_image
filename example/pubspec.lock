@@ -114,7 +114,7 @@ packages:
     description:
       path: flutter_cache_manager
       ref: "feat/network-request-cancellation"
-      resolved-ref: "9145c01ae9e0a1a337d7cba43ad30aae28429263"
+      resolved-ref: c9df9206c15c2f853c95e30ccf57f0f24bef7261
       url: "https://github.com/Railway-Engineering-Solutions/flutter_cache_manager.git"
     source: git
     version: "3.5.0"
