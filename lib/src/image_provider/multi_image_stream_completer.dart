@@ -210,8 +210,11 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   void _cancelLoading() {
     _timer?.cancel();
     _timer = null;
+
+    print('cancelLoading, $_cancellationToken');
     // Cancel any pending network requests
     _cancellationToken?.cancel();
+
     // Cancel stream subscriptions to stop processing the response
     _codecSubscription?.cancel();
     _codecSubscription = null;
