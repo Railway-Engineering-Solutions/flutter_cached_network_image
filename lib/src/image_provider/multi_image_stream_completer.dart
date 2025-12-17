@@ -211,7 +211,6 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     _timer?.cancel();
     _timer = null;
 
-    print('cancelLoading, $_cancellationToken');
     // Cancel any pending network requests
     _cancellationToken?.cancel();
 
@@ -275,6 +274,9 @@ class _MultiImageStreamCompleterHandle implements ImageStreamCompleterHandle {
     assert(_completer != null);
     assert(_completer!.__keepAliveHandles > 0);
     assert(!_completer!.__disposed);
+
+    // Cancel any pending network requests
+    _completer?._cancellationToken?.cancel();
 
     _delegateHandle.dispose();
 
