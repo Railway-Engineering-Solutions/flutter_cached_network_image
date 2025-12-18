@@ -90,7 +90,7 @@ packages:
     dependency: "direct main"
     description:
       path: flutter_cache_manager
-      ref: "feat/network-request-cancellation"
+      ref: "feat/network-request-cancellation-2"
       resolved-ref: "61dafc5a57d6aa3fedf73dd125ce7dd9fe764639"
       url: "https://github.com/Railway-Engineering-Solutions/flutter_cache_manager.git"
     source: git
