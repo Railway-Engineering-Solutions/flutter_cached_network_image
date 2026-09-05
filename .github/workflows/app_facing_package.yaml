@@ -10,12 +10,18 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+*"
     branches: [develop, main]
     paths:
-      - "cached_network_image/**"
+      - "lib/**"
+      - "test/**"
+      - "example/**"
+      - "pubspec.yaml"
       - ".github/workflows/app_facing_package.yaml"
   pull_request:
     branches: [develop]
     paths:
-      - "cached_network_image/**"
+      - "lib/**"
+      - "test/**"
+      - "example/**"
+      - "pubspec.yaml"
       - ".github/workflows/app_facing_package.yaml"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -27,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      source-directory: ./cached_network_image
+      source-directory: .
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -59,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      source-directory: ./cached_network_image
+      source-directory: .
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -91,8 +97,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      source-directory: ./cached_network_image
-      example-directory: ./cached_network_image/example
+      source-directory: .
+      example-directory: ./example
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -130,8 +136,8 @@ jobs:
     runs-on: macos-latest
 
     env:
-      source-directory: ./cached_network_image
-      example-directory: ./cached_network_image/example
+      source-directory: .
+      example-directory: ./example
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -163,8 +169,8 @@ jobs:
     runs-on: macos-latest
 
     env:
-      source-directory: ./cached_network_image
-      example-directory: ./cached_network_image/example
+      source-directory: .
+      example-directory: ./example
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -201,8 +207,8 @@ jobs:
     runs-on: windows-latest
 
     env:
-      source-directory: ./cached_network_image
-      example-directory: ./cached_network_image/example
+      source-directory: .
+      example-directory: ./example
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -239,8 +245,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      source-directory: ./cached_network_image
-      example-directory: ./cached_network_image/example
+      source-directory: .
+      example-directory: ./example
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -286,8 +292,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      source-directory: ./cached_network_image
-      example-directory: ./cached_network_image/example
+      source-directory: .
+      example-directory: ./example
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -318,7 +324,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      source-directory: ./cached_network_image
+      source-directory: .
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -351,52 +357,3 @@ jobs:
       #     files: ${{env.source-directory}}/coverage/lcov.info
       #     name: CachedNetworkImage (App Facing Package)
       #     fail_ci_if_error: true
-
-  publish:
-    if: ${{ github.ref_type == 'tag' }}
-    name: Publish package
-    permissions:
-      id-token: write
-    needs:
-      [
-        format,
-        analyze,
-        tests,
-        build_android,
-        build_ios,
-        build_macOS,
-        build_windows,
-        build_linux,
-        build_web,
-      ]
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    env:
-      source-directory: ./cached_network_image
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      - name: Set up Dart
-        uses: dart-lang/setup-dart@v1
-
-      # Make sure the stable version of Flutter is available
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          architecture: x64
-          cache: true
-
-      # Download all Flutter packages
-      - name: Download dependencies
-        run: flutter pub get
-        working-directory: ${{env.source-directory}}
-
-      # Publish the package
-      - name: Publish package
-        run: dart pub publish -v -f
-        working-directory: ${{env.source-directory}}
