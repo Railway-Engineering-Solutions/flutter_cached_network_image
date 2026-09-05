@@ -20,8 +20,11 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     required double scale,
     Stream<ImageChunkEvent>? chunkEvents,
     InformationCollector? informationCollector,
-  })  : _informationCollector = informationCollector,
-        _scale = scale {
+  }) : _informationCollector = informationCollector,
+       // An initializing formal is not possible here: named parameters
+       // cannot be private, so `this._scale` is not valid Dart.
+       // ignore: prefer_initializing_formals
+       _scale = scale {
     _codecSubscription = codec.listen(
       (event) {
         if (_timer != null) {
@@ -140,6 +143,11 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
         informationCollector: _informationCollector,
         silent: true,
       );
+      return;
+    }
+    // The completer can be disposed while the frame above is being decoded,
+    // which clears _codec. There is nothing left to emit or schedule then.
+    if (_codec == null) {
       return;
     }
     if (_codec!.frameCount == 1) {

@@ -42,3 +42,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# FVM local Flutter SDK
+.fvmrc
+.fvm/
+.vscode/settings.json
+
+# Local dependency overrides
+pubspec_overrides.yaml

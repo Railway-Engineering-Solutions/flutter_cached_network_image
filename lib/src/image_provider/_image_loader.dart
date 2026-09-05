@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 /// ImageLoader class to load images from network with caching support.
@@ -76,11 +76,12 @@ class ImageLoader {
   ) async* {
     try {
       assert(
-          cacheManager is ImageCacheManager ||
-              (maxWidth == null && maxHeight == null),
-          'To resize the image with a CacheManager the '
-          'CacheManager needs to be an ImageCacheManager. maxWidth and '
-          'maxHeight will be ignored when a normal CacheManager is used.');
+        cacheManager is ImageCacheManager ||
+            (maxWidth == null && maxHeight == null),
+        'To resize the image with a CacheManager the '
+        'CacheManager needs to be an ImageCacheManager. maxWidth and '
+        'maxHeight will be ignored when a normal CacheManager is used.',
+      );
 
       final stream = cacheManager is ImageCacheManager
           ? cacheManager.getImageFile(

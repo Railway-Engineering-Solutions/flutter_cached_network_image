@@ -1,3 +1,20 @@
+## [4.0.0]
+
+### Breaking changes
+
+* Requires Flutter `>=3.44.0` and Dart `^3.12.0`
+* Replaces `package:flutter/material.dart` with `package:material_ui/material_ui.dart`
+  across the package, for Wasm compatibility (ported from upstream 4.0.0)
+
+### Other changes
+
+* Fixes a null check crash in `MultiImageStreamCompleter` when the completer is
+  disposed while a frame is being decoded
+* Fixes the `FakeTicker` test helper for Flutter 3.44+ (`forceFrames`)
+* Marks the package `publish_to: none`, since it depends on the
+  Railway-Engineering-Solutions `flutter_cache_manager` over git
+* Raises `flutter_lints` to ^6.0.0 and formats the package with `dart format`
+
 ## [3.4.1] - 2024-08-13
 
 * Target js_interop for Wasm support
