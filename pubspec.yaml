@@ -6,11 +6,15 @@ topics:
   - cache
   - image
   - network-image
-version: 3.5.0
+version: 4.0.0
+
+# This fork depends on the Railway-Engineering-Solutions flutter_cache_manager
+# over git, so it is consumed over git rather than published to pub.dev.
+publish_to: none
 
 environment:
-  sdk: ^3.0.0
-  flutter: ">=3.10.0"
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
@@ -20,11 +24,12 @@ dependencies:
       url: https://github.com/Railway-Engineering-Solutions/flutter_cache_manager.git
       ref: develop
       path: flutter_cache_manager
+  material_ui: ^1.1.1
   octo_image: ^2.1.0
 
 dev_dependencies:
   file: ">=7.0.0 <8.0.0"
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.4

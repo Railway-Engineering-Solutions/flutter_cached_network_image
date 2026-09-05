@@ -5,7 +5,7 @@ import 'package:cached_network_image/src/image_provider/_image_loader.dart'
     show ImageLoader;
 import 'package:cached_network_image/src/image_provider/multi_image_stream_completer.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 /// Listener for errors
