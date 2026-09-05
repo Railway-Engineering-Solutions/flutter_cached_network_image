@@ -17,14 +17,10 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   /// to show.
   MultiImageStreamCompleter({
     required Stream<ui.Codec> codec,
-    required double scale,
+    required this._scale,
     Stream<ImageChunkEvent>? chunkEvents,
     InformationCollector? informationCollector,
-  }) : _informationCollector = informationCollector,
-       // An initializing formal is not possible here: named parameters
-       // cannot be private, so `this._scale` is not valid Dart.
-       // ignore: prefer_initializing_formals
-       _scale = scale {
+  }) : _informationCollector = informationCollector {
     _codecSubscription = codec.listen(
       (event) {
         if (_timer != null) {
