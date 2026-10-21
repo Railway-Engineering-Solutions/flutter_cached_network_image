@@ -1,3 +1,8 @@
+## [4.0.4] - 2026-10-21
+
+* Merge upstream 4.0.4, retaining the flattened IO implementation, cancellation and disposal fixes.
+* Add image stream debug labels.
+
 ## [4.0.0]
 
 ### Breaking changes
