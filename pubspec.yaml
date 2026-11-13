@@ -6,7 +6,7 @@ topics:
   - cache
   - image
   - network-image
-version: 4.0.4
+version: 4.1.1
 
 # This fork depends on the Railway-Engineering-Solutions flutter_cache_manager
 # over git, so it is consumed over git rather than published to pub.dev.

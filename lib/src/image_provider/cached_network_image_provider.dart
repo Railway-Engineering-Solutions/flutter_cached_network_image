@@ -27,6 +27,7 @@ class CachedNetworkImageProvider
     this.headers,
     this.cacheManager,
     this.cacheKey,
+    this.minFrameDuration,
   });
 
   /// CacheManager from which the image files are loaded.
@@ -58,6 +59,9 @@ class CachedNetworkImageProvider
   /// [ImageCacheManager] the image is resized on disk to fit the width.
   final int? maxWidth;
 
+  /// {@macro cached_network_image.minFrameDuration}
+  final Duration? minFrameDuration;
+
   @override
   Future<CachedNetworkImageProvider> obtainKey(
     ImageConfiguration configuration,
@@ -76,6 +80,7 @@ class CachedNetworkImageProvider
       codec: _loadBufferAsync(key, chunkEvents, decode),
       chunkEvents: chunkEvents.stream,
       scale: key.scale,
+      minFrameDuration: key.minFrameDuration,
       debugLabel: key.url,
       informationCollector: () => <DiagnosticsNode>[
         DiagnosticsProperty<ImageProvider>('Image provider', this),
@@ -127,6 +132,7 @@ class CachedNetworkImageProvider
       codec: _loadImageAsync(key, chunkEvents, decode),
       chunkEvents: chunkEvents.stream,
       scale: key.scale,
+      minFrameDuration: key.minFrameDuration,
       debugLabel: key.url,
       informationCollector: () => <DiagnosticsNode>[
         DiagnosticsProperty<ImageProvider>('Image provider', this),
@@ -173,14 +179,23 @@ class CachedNetworkImageProvider
       return ((cacheKey ?? url) == (other.cacheKey ?? other.url)) &&
           scale == other.scale &&
           maxHeight == other.maxHeight &&
-          maxWidth == other.maxWidth;
+          maxWidth == other.maxWidth &&
+          minFrameDuration == other.minFrameDuration;
     }
     return false;
   }
 
   @override
-  int get hashCode => Object.hash(cacheKey ?? url, scale, maxHeight, maxWidth);
+  int get hashCode => Object.hash(
+    cacheKey ?? url,
+    scale,
+    maxHeight,
+    maxWidth,
+    minFrameDuration,
+  );
 
   @override
-  String toString() => 'CachedNetworkImageProvider("$url", scale: $scale)';
+  String toString() =>
+      'CachedNetworkImageProvider("$url", scale: $scale'
+      '${minFrameDuration == null ? '' : ', minFrameDuration: $minFrameDuration'})';
 }

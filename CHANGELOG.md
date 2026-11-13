@@ -1,4 +1,35 @@
-## [4.0.4] - 2026-10-21
+## [4.1.1] - 2026-11-13
+
+* Merge upstream 4.1.0 (opt-in `minFrameDuration`, queued-frame disposal, no re-decode of static images), keeping the flattened IO-only layout and image-stream cancellation. The upstream web package fix (#1063) does not apply: this fork has no `cached_network_image_web`.
+* Use the framework `onDisposed` hook for disposal, replacing the fork's own keep-alive disposal.
+
+## [4.1.0] - 2026-11-11
+
+* Allow `evictFromCache` to match `minFrameDuration` and custom cache keys when evicting memory entries.
+* Add opt-in `minFrameDuration` to `CachedNetworkImage` and `CachedNetworkImageProvider` for animated images, including GIF, WebP and APNG. The default `null` preserves codec timing.
+* Pass `Duration(milliseconds: 100)` to match browser timing for frames of 10ms or less. Longer frames retain their codec duration, and smaller settings never shorten a frame.
+
+## [4.0.7] - 2026-11-10
+
+* Bump `flutter_cache_manager` to `^3.5.0`
+
+## [4.0.6] - 2026-10-29
+
+* Animated images no longer leak decoded frames or codecs when removed, including when released from the image cache
+* A newer refreshed image is no longer replaced by an older pending refresh
+* Refreshed images appear after playback finishes or resumes, without cutting a displayed animation frame short
+
+## [4.0.5] - 2026-10-17
+
+* Stop decoding a static image again each time a listener is re-added, which blanked images on web (Firefox and Safari) after navigating back to a route
+* Resume an animated image from its waiting frame when a listener is re-added, instead of skipping that frame
+* Reset the frame count when a new codec arrives, so an animation that follows a placeholder shows all of its frames
+* Discard frames from a codec that has been replaced, whether still decoding or waiting to be shown, so a stale cached image is no longer shown over the refreshed one
+* Dispose frames that finish decoding after the completer is disposed, instead of leaking them
+* Ignore listener re-adds while a frame is already being decoded; a failed decode no longer blocks later decodes
+* Add tests for listener re-add, failed decodes and codec switches during decoding
+
+## [4.0.4] - 2026-10-21 (Railway-Engineering-Solutions fork)
 
 * Merge upstream 4.0.4, retaining the flattened IO implementation, cancellation and disposal fixes.
 * Add image stream debug labels.

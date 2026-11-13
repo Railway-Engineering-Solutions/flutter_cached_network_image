@@ -74,6 +74,12 @@ class ImageLoader {
     Map<String, String>? headers,
     VoidCallback evictImage,
   ) async* {
+    // The completer cancels its chunk subscription when it is disposed. Treat
+    // that as cancellation of this load: stop listening to the cache manager
+    // and drop (dispose) a codec that was still being decoded, instead of
+    // keeping the load running for an image nobody will show.
+    var cancelled = false;
+    chunkEvents.onCancel = () => cancelled = true;
     try {
       assert(
         cacheManager is ImageCacheManager ||
@@ -100,6 +106,7 @@ class ImageLoader {
             );
 
       await for (final result in stream) {
+        if (cancelled) break;
         if (result is DownloadProgress) {
           chunkEvents.add(
             ImageChunkEvent(
@@ -111,7 +118,12 @@ class ImageLoader {
         if (result is FileInfo) {
           final file = result.file;
           final bytes = await file.readAsBytes();
+          if (cancelled) break;
           final decoded = await decode(bytes);
+          if (cancelled) {
+            decoded.dispose();
+            break;
+          }
           yield decoded;
         }
       }
