@@ -22,7 +22,7 @@ dependencies:
   flutter_cache_manager:
     git:
       url: https://github.com/Railway-Engineering-Solutions/flutter_cache_manager.git
-      ref: develop
+      ref: dc88e17add9896cf33354cc64dd8f8b63faab2b6
       path: flutter_cache_manager
   material_ui: ^1.3.0
   octo_image: ^2.1.1
